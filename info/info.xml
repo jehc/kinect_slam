@@ -1,0 +1,54 @@
+<?xml version='1.0'?>
+
+<project>
+        <name>RGBDSLAM - 6DOF SLAM for Kinect-style cameras</name>
+
+        <author>
+		<name>Felix Endres</name>
+		<url>http://www.informatik.uni-freiburg.de/~endres</url>
+	</author>
+        <author>
+		<name>Juergen Hess</name>
+		<url>http://www.informatik.uni-freiburg.de/~hess</url>
+	</author>        <author>
+		<name>Nikolas Engelhard</name>
+	</author>
+
+        <briefdescription>
+        RGBDSLAM allows to quickly acquire colored 3D models of objects and
+        indoor scenes with a hand-held Kinect-style camera. It provides a
+        SLAM front-end based on visual features s.a. SURF or SIFT to match 
+        pairs of acquired images, and uses RANSAC to robustly estimate the 
+        3D transformation between them. The resulting camera pose graph is
+        then optimized with the SLAM back-end HOG-Man. 
+        </briefdescription>
+
+        <description>
+        RGBDSLAM allows to quickly acquire colored 3D models of objects and
+        indoor scenes with a hand-held Kinect-style camera. It uses visual
+        features s.a. SURF or SIFT to match pairs of acquired images, and uses
+        RANSAC to robustly estimate the 3D transformation between them. To
+        achieve online processing, the current image is matched only versus a
+        subset of the previous images.  Subsequently,
+        it constructs a graph whose nodes correspond to camera views and whose
+        edges correspond to the estimated 3D transformations.  The graph is
+        then optimized with HOG-Man to reduce the accumulated pose errors.
+        </description>
+
+        <requirement>
+	Developed and tested under Ubuntu (GCC). Requires ROS Diamondback and HOG-Man.
+	</requirement>
+
+	<map>Pose graph with colored point clouds</map>
+
+	<input>
+    Monochrome and depth image, colored point cloud
+	</input>
+
+
+
+	<license>RGBDSLAM is licenced under GPL v.3 </license>
+
+</project>
+
+
