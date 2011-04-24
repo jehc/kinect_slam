@@ -101,7 +101,7 @@ matcher_(matcher)
   // TODO: If batch sending/saving of clouds would be removed, the pointcloud wouldn't have to be saved
   // which would slim down the Memory requirements
   pcl::fromROSMsg(*point_cloud,pc_col);
-  ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime5) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "pc2->pcl conversion runtime: " << ( std::clock() - starttime5 ) / (double)CLOCKS_PER_SEC );
+ // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime5) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "pc2->pcl conversion runtime: " << ( std::clock() - starttime5 ) / (double)CLOCKS_PER_SEC );
 
   // project pixels to 3dPositions and create search structures for the gicp
 #ifdef USE_SIFT_GPU
@@ -327,7 +327,7 @@ int Node::findPairsFlann(const Node* other, vector<cv::DMatch>* matches) const {
 
   //ROS_INFO("matches size: %i, rows: %i", (int) matches->size(), feature_descriptors_.rows);
 
-  ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "findPairsFlann runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
+  // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "findPairsFlann runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
   return matches->size();
 }
 
@@ -445,7 +445,7 @@ void Node::computeInliersAndError(const std::vector<cv::DMatch>& matches,
     vector<double>& errors,
     double squaredMaxInlierDistInM) const{ //output var
 
-  std::clock_t starttime=std::clock();
+  // std::clock_t starttime=std::clock();
 
   inliers.clear();
   errors.clear();
@@ -494,7 +494,7 @@ void Node::computeInliersAndError(const std::vector<cv::DMatch>& matches,
   }
 
 
-  ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
+  // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 
 }
 /*
@@ -624,6 +624,15 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   vector<double> errors;
   vector<double> temp_errorsA;
 
+
+  // activate to optimize error (with given inlier_cnt_threshold
+  // deactivate to optimize number of inliers (with given max_error of max_dist_m
+//#define OPTIMIZE_ERROR
+
+#ifndef OPTIMIZE_ERROR
+  max_dist_m = 0.02; // harder threshold for inlier_cnt-optimization
+#endif
+
   double best_error = 1e6;
   uint best_inlier_cnt = 0;
 
@@ -672,26 +681,30 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
 
     // ROS_INFO("iteration %d  cnt: %d, best: %d,  error: %.2f",n_iter, inlier.size(), best_inlier_cnt, inlier_error*100);
 
-    if(inlier.size() < min_inlier_threshold || inlier_error > max_dist_m){
+
+    assert(inlier_error <= max_dist_m && inlier_error>0);
+    if(inlier.size() < min_inlier_thresholds){
       //inlier.size() < ((float)initial_matches->size())*min_inlier_ratio || 
       // ROS_INFO("Skipped iteration: inliers: %i (min %i), inlier_error: %.2f (max %.2f)", (int)inlier.size(), (int) min_inlier_threshold,  inlier_error*100, max_dist_m*100);
       continue;
     }
     // ROS_INFO("Refining iteration from %i samples: all matches: %i, inliers: %i, inlier_error: %f", (int)sample_size, (int)initial_matches->size(), (int)inlier.size(), inlier_error);
     valid_iterations++;
-    //if (inlier_error > 0) ROS_ERROR("size: %i", (int)temp_errorsA.size());
-    assert(inlier_error>0);
+
 
     //Performance hacks:
     ///Iterations with more than half of the initial_matches inlying, count twice
-    if (inlier.size() > initial_matches->size()*0.5) n_iter++;
+    // if (inlier.size() > initial_matches->size()*0.5) n_iter++;
     ///Iterations with more than 80% of the initial_matches inlying, count threefold
-    if (inlier.size() > initial_matches->size()*0.8) n_iter++;
+    // if (inlier.size() > initial_matches->size()*0.8) n_iter++;
 
 
-
-    if (inlier_error < best_error) { //copy this to the result
-      resulting_transformation = transformation;
+#ifdef OPTIMIZE_ERROR
+    if (inlier_error < best_error) { // size is at least min_inlier_thresholds
+#else
+    if (inlier.size() > best_inlier_cnt) { // inlier_error is at most max_dist_m
+#endif
+    	resulting_transformation = transformation;
       matches = inlier;
       assert(matches.size()>= min_inlier_threshold);
       best_inlier_cnt = inlier.size();
@@ -724,17 +737,17 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
       best_error_invalid = inlier_error;
     }
 
-    if(inlier.size() < min_inlier_threshold || new_inlier_error > max_dist_m){
-      //inlier.size() < ((float)initial_matches->size())*min_inlier_ratio || 
-      // ROS_INFO("Skipped iteration: inliers: %i (min %i), inlier_error: %.2f (max %.2f)", (int)inlier.size(), (int) min_inlier_threshold,  inlier_error*100, max_dist_m*100);
+    if(inlier.size() < min_inlier_threshold || ){
       continue;
     }
-    // ROS_INFO("Refined iteration from %i samples: all matches %i, inliers: %i, new_inlier_error: %f", (int)sample_size, (int)initial_matches->size(), (int)inlier.size(), new_inlier_error);
 
-    assert(new_inlier_error>0);
+    assert(new_inlier_error>0 && new_inlier_error < max_dist_m);
 
-    if (new_inlier_error < best_error) 
-    {
+#ifdef OPTIMIZE_ERROR
+    if (new_inlier_error < best_error) { // size is at least min_inlier_thresholds
+#else
+    if (inlier.size() > best_inlier_cnt) { // inlier_error is at most max_dist_m
+#endif
       resulting_transformation = transformation;
       matches = inlier;
       assert(matches.size()>= min_inlier_threshold);
@@ -752,9 +765,9 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   // ROS_INFO("best overall: inlier: %i, error: %.2f",best_inlier_invalid, best_error_invalid*100);
 
 
-  // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "getRelativeTransformationTo runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
+   ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "getRelativeTransformationTo runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 
-return matches.size() >= min_inlier_threshold;
+   return matches.size() >= min_inlier_threshold;
 }
 
 

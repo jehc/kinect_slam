@@ -33,7 +33,7 @@ const char* global_rosnode_name = "rgbdslam"; const char* global_ros_namespace =
 
 ///In openNIListener.cpp
 const bool global_start_paused = true;
-const int global_subscriber_queue_size = 20;
+const int global_subscriber_queue_size = 2;
 const int global_publisher_queue_size = 1;
 const char* global_topic_reframed_cloud =    "reframed_cloud";
 const char* global_topic_transformed_cloud = "transformed_cloud";
