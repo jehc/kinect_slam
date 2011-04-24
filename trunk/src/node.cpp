@@ -598,7 +598,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
 
   // ROS_INFO("inlier_threshold: %d", min_inlier_threshold);
 
-
+  ransac_iterations = 1000;
   matches.clear();
   
   // get 30% of initial matches as inliers (but cut off at 30)
@@ -619,7 +619,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   srand((long)std::clock());
   
   // a point is an inlier if it's no more than max_dist_m m from its partner apart
-  const float max_dist_m = 0.03;
+  float max_dist_m = 0.03;
   const unsigned int sample_size = 3;// chose this many randomly from the correspondences:
   vector<double> errors;
   vector<double> temp_errorsA;
@@ -630,7 +630,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
 //#define OPTIMIZE_ERROR
 
 #ifndef OPTIMIZE_ERROR
-  max_dist_m = 0.02; // harder threshold for inlier_cnt-optimization
+  max_dist_m = 0.04;
 #endif
 
   double best_error = 1e6;
@@ -645,7 +645,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
 
   
   
-  //ROS_INFO("running %i iterations with %i initial matches, min_match: %i, max_error: %.2f", (int) ransac_iterations, (int) initial_matches->size(), (int) min_inlier_threshold, max_dist_m*100 );
+  ROS_INFO("running %i iterations with %i initial matches, min_match: %i, max_error: %.2f", (int) ransac_iterations, (int) initial_matches->size(), (int) min_inlier_threshold, max_dist_m*100 );
 
   for (uint n_iter = 0; n_iter < ransac_iterations; n_iter++) {
     //generate a map of samples. Using a map solves the problem of drawing a sample more than once
@@ -679,15 +679,16 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
       best_error_invalid = inlier_error;
     }
 
-    // ROS_INFO("iteration %d  cnt: %d, best: %d,  error: %.2f",n_iter, inlier.size(), best_inlier_cnt, inlier_error*100);
+    ROS_INFO("iteration %d  cnt: %d, best: %d,  error: %.2f",n_iter, (int) inlier.size(), best_inlier_cnt, inlier_error*100);
 
 
-    assert(inlier_error <= max_dist_m && inlier_error>0);
-    if(inlier.size() < min_inlier_thresholds){
+    if(inlier.size() < min_inlier_threshold){
       //inlier.size() < ((float)initial_matches->size())*min_inlier_ratio || 
       // ROS_INFO("Skipped iteration: inliers: %i (min %i), inlier_error: %.2f (max %.2f)", (int)inlier.size(), (int) min_inlier_threshold,  inlier_error*100, max_dist_m*100);
       continue;
     }
+    assert(inlier_error <= max_dist_m && inlier_error>0);
+
     // ROS_INFO("Refining iteration from %i samples: all matches: %i, inliers: %i, inlier_error: %f", (int)sample_size, (int)initial_matches->size(), (int)inlier.size(), inlier_error);
     valid_iterations++;
 
@@ -737,9 +738,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
       best_error_invalid = inlier_error;
     }
 
-    if(inlier.size() < min_inlier_threshold || ){
-      continue;
-    }
+    if(inlier.size() < min_inlier_threshold){ continue; }
 
     assert(new_inlier_error>0 && new_inlier_error < max_dist_m);
 
@@ -765,7 +764,7 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   // ROS_INFO("best overall: inlier: %i, error: %.2f",best_inlier_invalid, best_error_invalid*100);
 
 
-   ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "getRelativeTransformationTo runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
+   // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "getRelativeTransformationTo runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 
    return matches.size() >= min_inlier_threshold;
 }
