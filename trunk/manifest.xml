@@ -21,8 +21,13 @@
   <depend package="image_geometry"/>
   <depend package="hogman_minimal"/>
   <depend package="visualization_msgs"/>
+  
+  
+  <depend package="pcl_visualization"/>
+  
   <rosdep name="opengl"/>
   <rosdep name="qt4"/>
+  
   <export>
     <rosdoc config="rosdoc.yaml" />
   </export>

@@ -22,6 +22,16 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 set(ROS_BUILD_TYPE RelWithDebInfo)
 
+
+# needed for range inage visualization
+find_package(wxWidgets REQUIRED)
+include(${wxWidgets_USE_FILE})
+include_directories(${wxWidgets_INCLUDE_DIRS})
+link_libraries(${wxWidgets_LIBRARIES})
+
+
+
+
 #is used for compiling the libraries 
 set(USE_GICP 0)
 IF (${USE_GICP_BIN} OR ${USE_GICP_CODE})
