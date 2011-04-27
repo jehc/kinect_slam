@@ -34,7 +34,7 @@
 //#define USE_ICP_BIN
 
 // ICP_2 for included function
-// #define USE_ICP_CODE
+#define USE_ICP_CODE
 
 // #define USE_SIFT_GPU
 
