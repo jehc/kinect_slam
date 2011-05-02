@@ -763,7 +763,6 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   ROS_INFO("%i good iterations (from %i), inlier pct %i, inlier cnt: %i, error: %.2f cm",valid_iterations, (int) ransac_iterations, (int) (matches.size()*1.0/initial_matches->size()*100),(int) matches.size(),rmse*100);
   // ROS_INFO("best overall: inlier: %i, error: %.2f",best_inlier_invalid, best_error_invalid*100);
 
-
    // ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "getRelativeTransformationTo runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 
    return matches.size() >= min_inlier_threshold;
@@ -889,6 +888,18 @@ MatchingResult Node::matchNodePair(const Node* older_node){
       mr.final_trafo = mr.ransac_trafo;    
 #endif
 #endif
+
+
+
+
+// TODO: print all matching points in world-frame
+
+    this-> 
+
+
+
+
+// <TODO>
 
       mr.edge.id1 = older_node->id_;//and we have a valid transformation
       mr.edge.id2 = this->id_; //since there are enough matching features,

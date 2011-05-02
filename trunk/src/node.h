@@ -73,6 +73,12 @@ public:
 	~Node();
 
 
+	
+	
+	
+	
+	
+	
 	///Compare the features of two nodes and compute the transformation
 	MatchingResult matchNodePair(const Node* older_node);
 

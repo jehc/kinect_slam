@@ -69,7 +69,7 @@ OpenNIListener::OpenNIListener(ros::NodeHandle nh, GraphManager* graph_mgr,
   depth_mono8_img_(cv::Mat()),
   nh_(nh),
   /*callback_counter_(0),*/
-  save_bag_file(false),
+  save_bag_file(true),
   pause_(global_start_paused),
   getOneFrame_(false),
   first_frame_(true)
