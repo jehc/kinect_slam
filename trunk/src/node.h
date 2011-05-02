@@ -73,10 +73,9 @@ public:
 	~Node();
 
 
-	
-	
-	
-	
+	// list of all indidices of features which were an inlier at least once
+	// list can (and probably will) contain dublicates
+	vector<int> matched_features;
 	
 	
 	///Compare the features of two nodes and compute the transformation

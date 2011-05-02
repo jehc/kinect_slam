@@ -22,7 +22,7 @@
 #include "pcl/point_types.h"
 
 //Determines whether or not to process node pairs concurrently
-#define CONCURRENT_EDGE_COMPUTATION 1
+// #define CONCURRENT_EDGE_COMPUTATION 
 
 
 ///This file contains the parameters that determine the

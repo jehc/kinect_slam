@@ -1,18 +1,18 @@
 /* This file is part of RGBDSLAM.
- * 
- * RGBDSLAM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * RGBDSLAM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with RGBDSLAM.  If not, see <http://www.gnu.org/licenses/>.
- */
+* 
+* RGBDSLAM is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+* 
+* RGBDSLAM is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with RGBDSLAM.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
 #include <hogman_minimal/stuff/macros.h>
@@ -107,7 +107,7 @@ GraphManager::~GraphManager() {
 }
 
 void GraphManager::drawFeatureFlow(cv::Mat& canvas, cv::Scalar line_color,
-                                   cv::Scalar circle_color){
+				  cv::Scalar circle_color){
     std::clock_t starttime=std::clock();
     ROS_DEBUG("Number of features to draw: %d", (int)last_inlier_matches_.size());
 
@@ -129,27 +129,27 @@ void GraphManager::drawFeatureFlow(cv::Mat& canvas, cv::Scalar line_color,
     cv::drawKeypoints(tmpimage, newernode->feature_locations_2d_, tmpimage, cv::Scalar(90), 5);
     canvas+=tmpimage;
     for(unsigned int mtch = 0; mtch < last_inlier_matches_.size(); mtch++) {
-        cv::Point2f p,q; //TODO: Use sub-pixel-accuracy
-        unsigned int newer_idx = last_inlier_matches_[mtch].queryIdx;
-        unsigned int earlier_idx = last_inlier_matches_[mtch].trainIdx;
-        q = newernode->feature_locations_2d_[newer_idx].pt;
-        p = earliernode->feature_locations_2d_[earlier_idx].pt;
+	cv::Point2f p,q; //TODO: Use sub-pixel-accuracy
+	unsigned int newer_idx = last_inlier_matches_[mtch].queryIdx;
+	unsigned int earlier_idx = last_inlier_matches_[mtch].trainIdx;
+	q = newernode->feature_locations_2d_[newer_idx].pt;
+	p = earliernode->feature_locations_2d_[earlier_idx].pt;
 
-        double angle;    angle = atan2( (double) p.y - q.y, (double) p.x - q.x );
-        double hypotenuse = cv::norm(p-q);
-            cv::line(canvas, p, q, line_color, line_thickness, 8);
-        if(hypotenuse > 1.5){  //only larger motions larger than one pix get an arrow tip
-            cv::line( canvas, p, q, line_color, line_thickness, 8 );
-            /* Now draw the tips of the arrow.  */
-            p.x =  (q.x + 4 * cos(angle + pi_fourth));
-            p.y =  (q.y + 4 * sin(angle + pi_fourth));
-            cv::line( canvas, p, q, line_color, line_thickness, 8 );
-            p.x =  (q.x + 4 * cos(angle - pi_fourth));
-            p.y =  (q.y + 4 * sin(angle - pi_fourth));
-            cv::line( canvas, p, q, line_color, line_thickness, 8 );
-        } else { //draw a smaller circle into the bigger one 
-            cv::circle(canvas, p, circle_radius-2, circle_color, line_thickness, 8);
-        }
+	double angle;    angle = atan2( (double) p.y - q.y, (double) p.x - q.x );
+	double hypotenuse = cv::norm(p-q);
+	    cv::line(canvas, p, q, line_color, line_thickness, 8);
+	if(hypotenuse > 1.5){  //only larger motions larger than one pix get an arrow tip
+	    cv::line( canvas, p, q, line_color, line_thickness, 8 );
+	    /* Now draw the tips of the arrow.  */
+	    p.x =  (q.x + 4 * cos(angle + pi_fourth));
+	    p.y =  (q.y + 4 * sin(angle + pi_fourth));
+	    cv::line( canvas, p, q, line_color, line_thickness, 8 );
+	    p.x =  (q.x + 4 * cos(angle - pi_fourth));
+	    p.y =  (q.y + 4 * sin(angle - pi_fourth));
+	    cv::line( canvas, p, q, line_color, line_thickness, 8 );
+	} else { //draw a smaller circle into the bigger one 
+	    cv::circle(canvas, p, circle_radius-2, circle_color, line_thickness, 8);
+	}
     }
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 }
@@ -169,31 +169,31 @@ std::vector<int> GraphManager::getPotentialEdgeTargets(const Node* new_node, int
     ss << "Node ID's for comparison with the new node " << graph_.size() << ":";
     //Special Cases
     if(graph_.size() == 0){
-        ROS_WARN("Do not call this function as long as the graph is empty");
-        return ids_to_link_to;
+	ROS_WARN("Do not call this function as long as the graph is empty");
+	return ids_to_link_to;
     }
     for(int i = 2; i <= (int)graph_.size() && i <= last_targets; i++){
-        ss << "(" << graph_.size()-i << "), " ; 
-        ids_to_link_to.push_back(graph_.size()-i);
+	ss << "(" << graph_.size()-i << "), " ; 
+	ids_to_link_to.push_back(graph_.size()-i);
     }
     if(max_targets < 0) 
-        return ids_to_link_to;
+	return ids_to_link_to;
     if(max_targets == 0){
-        ids_to_link_to.push_back(0);
-        return ids_to_link_to; //only compare to first frame
+	ids_to_link_to.push_back(0);
+	return ids_to_link_to; //only compare to first frame
     } else if(max_targets == 1){
-        ids_to_link_to.push_back(graph_.size()-2); 
-        return ids_to_link_to; //only compare to previous frame
+	ids_to_link_to.push_back(graph_.size()-2); 
+	return ids_to_link_to; //only compare to previous frame
     } 
     
     //End special cases
     /*
     if(max_targets >= 10){ //compare to last 5, then split up evenly among the rest
-        for(unsigned int i = graph_.size(); i > graph_.size() -5; i--){
-          ids_to_link_to.push_back(i); 
-          max_targets--;
-          max_id_plus1--;
-        }
+	for(unsigned int i = graph_.size(); i > graph_.size() -5; i--){
+	  ids_to_link_to.push_back(i); 
+	  max_targets--;
+	  max_id_plus1--;
+	}
     } 
     */
 
@@ -202,9 +202,9 @@ std::vector<int> GraphManager::getPotentialEdgeTargets(const Node* new_node, int
     increment = increment < 1.0 ? 1.0 : increment; //smaller steps would select some id's twice
     ROS_DEBUG("preparing loop %f %f", id, increment);
     while((int)id < (int)max_id_plus1){
-        ss << "(" << id << "/" << (int)id << ")," ; 
-        ids_to_link_to.push_back((int)id); //implicit rounding
-        id += increment;
+	ss << "(" << id << "/" << (int)id << ")," ; 
+	ids_to_link_to.push_back((int)id); //implicit rounding
+	id += increment;
     }
     ROS_DEBUG("%s", ss.str().c_str());
 //    while((id+0.5) < max_id_plus1){ //Split up evenly
@@ -235,8 +235,8 @@ bool GraphManager::addNode(Node* new_node) {
     if(reset_request_) resetGraph(); 
 
     if (new_node->feature_locations_2d_.size() <= 50){
-        ROS_DEBUG("found only %i features on image, node is not included",(int)new_node->feature_locations_2d_.size());
-        return false;
+	ROS_DEBUG("found only %i features on image, node is not included",(int)new_node->feature_locations_2d_.size());
+	return false;
     }
 
     //set the node id only if the node is actually added to the graph
@@ -247,15 +247,15 @@ bool GraphManager::addNode(Node* new_node) {
     //First Node, so only build its index, insert into storage and add a
     //vertex at the origin, of which the position is very certain
     if (graph_.size()==0){
-        new_node->buildFlannIndex(); // create index so that next nodes can use it
-        graph_[new_node->id_] = new_node;
-        optimizer_->addVertex(0, Transformation3(), 1e9*Matrix6::eye(1.0)); //fix at origin
-        QString message;
-        Q_EMIT setGUIInfo(message.sprintf("Added first node with %i keypoints to the graph", (int)new_node->feature_locations_2d_.size()));
-        pointcloud_type const * the_pc(&(new_node->pc_col));
-        Q_EMIT setPointCloud(the_pc, latest_transform_);
-        ROS_DEBUG("GraphManager is thread %d, New Node is at (%p, %p)", (unsigned int)QThread::currentThreadId(), new_node, graph_[0]);
-        return true;
+	new_node->buildFlannIndex(); // create index so that next nodes can use it
+	graph_[new_node->id_] = new_node;
+	optimizer_->addVertex(0, Transformation3(), 1e9*Matrix6::eye(1.0)); //fix at origin
+	QString message;
+	Q_EMIT setGUIInfo(message.sprintf("Added first node with %i keypoints to the graph", (int)new_node->feature_locations_2d_.size()));
+	pointcloud_type const * the_pc(&(new_node->pc_col));
+	Q_EMIT setPointCloud(the_pc, latest_transform_);
+	ROS_DEBUG("GraphManager is thread %d, New Node is at (%p, %p)", (unsigned int)QThread::currentThreadId(), new_node, graph_[0]);
+	return true;
     }
 
     unsigned int num_edges_before = optimizer_->edges().size(); 
@@ -270,76 +270,111 @@ bool GraphManager::addNode(Node* new_node) {
     Node* prev_frame = graph_[graph_.size()-1];
     ROS_INFO("Comparing new node (%i) with previous node %i / %i", new_node->id_, (int)graph_.size()-1, prev_frame->id_);
     MatchingResult mr = new_node->matchNodePair(prev_frame);
+    
     if(mr.edge.id1 >= 0 && !isBigTrafo(mr.edge.mean)){
-        ROS_WARN("Transformation not relevant. Did not add as Node");
-        return false;
+	ROS_WARN("Transformation not relevant. Did not add as Node");
+	return false;
     } else if(mr.edge.id1 >= 0){
-        if (addEdgeToHogman(mr.edge, true)) {
-            ROS_INFO("Added Edge between %i and %i. Inliers: %i",mr.edge.id1,mr.edge.id2,(int) mr.inlier_matches.size());
-            last_matching_node_ = mr.edge.id1;
-            last_inlier_matches_ = mr.inlier_matches;
-            last_matches_ = mr.all_matches;
-        }
+	if (addEdgeToHogman(mr.edge, true)) {
+	    
+	  // <save indices of matching points>
+	  
+	  
+
+      // add indices of matching points in the corresponding list
+      for (uint i=0; i<mr.inlier_matches.size(); i++)
+      {
+	int this_id    = mr.inlier_matches.at(i).queryIdx;
+	int earlier_id = mr.inlier_matches.at(i).trainIdx;
+
+	new_node->matched_features.push_back(this_id);
+	prev_frame->matched_features.push_back(earlier_id); 
+      }
+
+// <!save indices of matching points>
+
+
+	  
+	  ROS_INFO("Added Edge between %i and %i. Inliers: %i",mr.edge.id1,mr.edge.id2,(int) mr.inlier_matches.size());
+	    last_matching_node_ = mr.edge.id1;
+	    last_inlier_matches_ = mr.inlier_matches;
+	    last_matches_ = mr.all_matches;
+	}
     }
     //Eigen::Matrix4f ransac_trafo, final_trafo;
     std::vector<int> vertices_to_comp = getPotentialEdgeTargets(new_node, global_connectivity); //vernetzungsgrad
     QList<const Node* > nodes_to_comp;//only necessary for parallel computation
     for (int id_of_id = (int)vertices_to_comp.size()-1; id_of_id >=0;id_of_id--){ 
-
+      
 #ifndef CONCURRENT_EDGE_COMPUTATION
 #define QT_NO_CONCURRENT
 #endif
 #ifndef QT_NO_CONCURRENT
-        //First compile a qlist of the nodes to be compared, then run the comparisons in parallel, 
-        //collecting a qlist of the results (using the blocking version of mapped).
-        nodes_to_comp.push_back(graph_[vertices_to_comp[id_of_id]]);
+	//First compile a qlist of the nodes to be compared, then run the comparisons in parallel, 
+	//collecting a qlist of the results (using the blocking version of mapped).
+	nodes_to_comp.push_back(graph_[vertices_to_comp[id_of_id]]);
     }
     ROS_DEBUG("Running node comparisons in parallel");
     QList<MatchingResult> results = QtConcurrent::blockingMapped(nodes_to_comp, 
-                                                                 boost::bind(&Node::matchNodePair, new_node, _1));
+								boost::bind(&Node::matchNodePair, new_node, _1));
     for(int i = 0; i <  results.size(); i++){
-        MatchingResult& mr = results[i];
+	MatchingResult& mr = results[i];
 #else
-        Node* abcd = graph_[vertices_to_comp[id_of_id]];
-        ROS_INFO("Comparing new node (%i) with node %i / %i", new_node->id_, vertices_to_comp[id_of_id], abcd->id_);
-        MatchingResult mr = new_node->matchNodePair(abcd);
+	Node* abcd = graph_[vertices_to_comp[id_of_id]];
+	ROS_INFO("Comparing new node (%i) with node %i / %i", new_node->id_, vertices_to_comp[id_of_id], abcd->id_);
+	MatchingResult mr = new_node->matchNodePair(abcd);
 #endif
-        if(mr.edge.id1 >= 0){
-            if (addEdgeToHogman(mr.edge, isBigTrafo(mr.edge.mean))) { //TODO: result isBigTrafo is not considered
-                ROS_INFO("Added Edge between %i and %i. Inliers: %i",mr.edge.id1,mr.edge.id2,(int) mr.inlier_matches.size());
-                last_matching_node_ = mr.edge.id1;
-                last_inlier_matches_ = mr.inlier_matches;
-                last_matches_ = mr.all_matches;
-            }
-        }
+	if(mr.edge.id1 >= 0){
+	    if (addEdgeToHogman(mr.edge, isBigTrafo(mr.edge.mean))) { //TODO: result isBigTrafo is not considered
+		ROS_INFO("Added Edge between %i and %i. Inliers: %i",mr.edge.id1,mr.edge.id2,(int) mr.inlier_matches.size());
+		last_matching_node_ = mr.edge.id1;
+		last_inlier_matches_ = mr.inlier_matches;
+		last_matches_ = mr.all_matches;
+		
+		// <save indices of matching points>
+
+		// add indices of matching points in the corresponding list
+		for (uint i=0; i<mr.inlier_matches.size(); i++)
+		{
+		  int this_id    = mr.inlier_matches.at(i).queryIdx;
+		  int earlier_id = mr.inlier_matches.at(i).trainIdx;
+
+		  new_node->matched_features.push_back(this_id);
+		  abcd->matched_features.push_back(earlier_id); 
+		}
+
+		  // <!save indices of matching points>
+		
+	    }
+	}
     }
     //END OF MAIN LOOP: Compare node pairs ######################################################################
 
     if (optimizer_->edges().size() > num_edges_before) { //Success
-        new_node->buildFlannIndex();
-        graph_[new_node->id_] = new_node;
-        ROS_INFO("Added Node, new Graphsize: %i", (int) graph_.size());
-        optimizeGraph();
-        Q_EMIT updateTransforms(getAllPosesAsMatrixList());
-        Q_EMIT setGraphEdges(getGraphEdges());
-        //make the transform of the last node known
-        broadcastTransform(ros::TimerEvent());
-        visualizeGraphEdges();
-        visualizeGraphNodes();
-        visualizeFeatureFlow3D(marker_id++);
-        pointcloud_type const * the_pc(&(new_node->pc_col));
-        Q_EMIT setPointCloud(the_pc, latest_transform_);
-        ROS_DEBUG("GraphManager is thread %d", (unsigned int)QThread::currentThreadId());
+	new_node->buildFlannIndex();
+	graph_[new_node->id_] = new_node;
+	ROS_INFO("Added Node, new Graphsize: %i", (int) graph_.size());
+	optimizeGraph();
+	Q_EMIT updateTransforms(getAllPosesAsMatrixList());
+	Q_EMIT setGraphEdges(getGraphEdges());
+	//make the transform of the last node known
+	broadcastTransform(ros::TimerEvent());
+	visualizeGraphEdges();
+	visualizeGraphNodes();
+	visualizeFeatureFlow3D(marker_id++);
+	pointcloud_type const * the_pc(&(new_node->pc_col));
+	Q_EMIT setPointCloud(the_pc, latest_transform_);
+	ROS_DEBUG("GraphManager is thread %d", (unsigned int)QThread::currentThreadId());
     }else{
-        //delete new_node; //is now  done by auto_ptr
-        ROS_WARN("Did not add as Node");
+	//delete new_node; //is now  done by auto_ptr
+	ROS_WARN("Did not add as Node");
     }
     QString message;
     Q_EMIT setGUIInfo(message.sprintf("%s, Graph Size: %iN/%iE, Duration: %f, Inliers: %i, &chi;<sup>2</sup>: %f", 
-                                     (optimizer_->edges().size() > num_edges_before) ? "Added" : "Ignored",
-                                     (int)optimizer_->vertices().size(), (int)optimizer_->edges().size(),
-                                     (std::clock()-starttime) / (double)CLOCKS_PER_SEC, (int)last_inlier_matches_.size(),
-                                     optimizer_->chi2()));
+				    (optimizer_->edges().size() > num_edges_before) ? "Added" : "Ignored",
+				    (int)optimizer_->vertices().size(), (int)optimizer_->edges().size(),
+				    (std::clock()-starttime) / (double)CLOCKS_PER_SEC, (int)last_inlier_matches_.size(),
+				    optimizer_->chi2()));
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", __FUNCTION__ << " runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
     return (optimizer_->edges().size() > num_edges_before);
 }
@@ -382,101 +417,132 @@ bool GraphManager::isBigTrafo(const Transformation3& t){
     return (dist > global_min_translation_meter || angle_around_axis > global_min_rotation_degree);
 }
 void GraphManager::visualizeFeatureFlow3D(unsigned int marker_id,
-                                          bool draw_outlier) const{
+					  bool draw_outlier) const{
     std::clock_t starttime=std::clock();
     if (ransac_marker_pub_.getNumSubscribers() > 0){ //don't visualize, if nobody's looking
 
-        visualization_msgs::Marker marker_lines;
+	visualization_msgs::Marker marker_lines;
 
-        marker_lines.header.frame_id = "/openni_rgb_optical_frame";
-        marker_lines.ns = "ransac_markers";
-        marker_lines.header.stamp = ros::Time::now();
-        marker_lines.action = visualization_msgs::Marker::ADD;
-        marker_lines.pose.orientation.w = 1.0;
-        marker_lines.id = marker_id;
-        marker_lines.type = visualization_msgs::Marker::LINE_LIST;
-        marker_lines.scale.x = 0.002;
-        
-        std_msgs::ColorRGBA color_red  ;  //red outlier
-        color_red.r = 1.0;
-        color_red.a = 1.0;
-        std_msgs::ColorRGBA color_green;  //green inlier, newer endpoint
-        color_green.g = 1.0;
-        color_green.a = 1.0;
-        std_msgs::ColorRGBA color_yellow;  //yellow inlier, earlier endpoint
-        color_yellow.r = 1.0;
-        color_yellow.g = 1.0;
-        color_yellow.a = 1.0;
-        std_msgs::ColorRGBA color_blue  ;  //red-blue outlier
-        color_blue.b = 1.0;
-        color_blue.a = 1.0;
+	marker_lines.header.frame_id = "/openni_rgb_optical_frame";
+	marker_lines.ns = "ransac_markers";
+	marker_lines.header.stamp = ros::Time::now();
+	marker_lines.action = visualization_msgs::Marker::ADD;
+	marker_lines.pose.orientation.w = 1.0;
+	marker_lines.id = marker_id;
+	marker_lines.type = visualization_msgs::Marker::LINE_LIST;
+	marker_lines.scale.x = 0.002;
+	
+	std_msgs::ColorRGBA color_red  ;  //red outlier
+	color_red.r = 1.0;
+	color_red.a = 1.0;
+	std_msgs::ColorRGBA color_green;  //green inlier, newer endpoint
+	color_green.g = 1.0;
+	color_green.a = 1.0;
+	std_msgs::ColorRGBA color_yellow;  //yellow inlier, earlier endpoint
+	color_yellow.r = 1.0;
+	color_yellow.g = 1.0;
+	color_yellow.a = 1.0;
+	std_msgs::ColorRGBA color_blue  ;  //red-blue outlier
+	color_blue.b = 1.0;
+	color_blue.a = 1.0;
 
-        marker_lines.color = color_green; //just to set the alpha channel to non-zero
+	marker_lines.color = color_green; //just to set the alpha channel to non-zero
 
-        const AISNavigation::PoseGraph3D::Vertex* earlier_v; //used to get the transform
-        const AISNavigation::PoseGraph3D::Vertex* newer_v; //used to get the transform
-        AISNavigation::PoseGraph3D::VertexIDMap v_idmap = optimizer_->vertices();
-        // end of initialization
-        ROS_DEBUG("Matches Visualization start: %lu Matches, %lu Inliers", last_matches_.size(), last_inlier_matches_.size());
+	const AISNavigation::PoseGraph3D::Vertex* earlier_v; //used to get the transform
+	const AISNavigation::PoseGraph3D::Vertex* newer_v; //used to get the transform
+	AISNavigation::PoseGraph3D::VertexIDMap v_idmap = optimizer_->vertices();
+	// end of initialization
+	ROS_DEBUG("Matches Visualization start: %lu Matches, %lu Inliers", last_matches_.size(), last_inlier_matches_.size());
 
-        // write all inital matches to the line_list
-        marker_lines.points.clear();//necessary?
+	// write all inital matches to the line_list
+	marker_lines.points.clear();//necessary?
 
-        if (draw_outlier)
-        {
-            for (unsigned int i=0;i<last_matches_.size(); i++){
-                int newer_id = last_matches_.at(i).queryIdx; //feature id in newer node
-                int earlier_id = last_matches_.at(i).trainIdx; //feature id in earlier node
+	if (draw_outlier)
+	{
+	    for (unsigned int i=0;i<last_matches_.size(); i++){
+		int newer_id = last_matches_.at(i).queryIdx; //feature id in newer node
+		int earlier_id = last_matches_.at(i).trainIdx; //feature id in earlier node
 
-                //earlier_v = static_cast<const AISNavigation::PoseGraph2D::Vertex*>(v_idmap[graph_[last_matching_node_]->id_]);
-                earlier_v = optimizer_->vertex(last_matching_node_);
-                //newer_v = static_cast<const AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[graph_.size()-1]->id_]);
-                newer_v = optimizer_->vertex(graph_.size()-1);
+		//earlier_v = static_cast<const AISNavigation::PoseGraph2D::Vertex*>(v_idmap[graph_[last_matching_node_]->id_]);
+		earlier_v = optimizer_->vertex(last_matching_node_);
+		//newer_v = static_cast<const AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[graph_.size()-1]->id_]);
+		newer_v = optimizer_->vertex(graph_.size()-1);
 
-                //Outliers are red (newer) to blue (older)
-                marker_lines.colors.push_back(color_red);
-                marker_lines.colors.push_back(color_blue);
+		//Outliers are red (newer) to blue (older)
+		marker_lines.colors.push_back(color_red);
+		marker_lines.colors.push_back(color_blue);
 
-                Node* last = graph_.find(graph_.size()-1)->second;
-                marker_lines.points.push_back(
-                        pointInWorldFrame(last->feature_locations_3d_[newer_id], newer_v->transformation));
-                Node* prev = graph_.find(last_matching_node_)->second;
-                marker_lines.points.push_back(
-                        pointInWorldFrame(prev->feature_locations_3d_[earlier_id], earlier_v->transformation));
-            }
-        }
+		Node* last = graph_.find(graph_.size()-1)->second;
+		marker_lines.points.push_back(
+			pointInWorldFrame(last->feature_locations_3d_[newer_id], newer_v->transformation));
+		Node* prev = graph_.find(last_matching_node_)->second;
+		marker_lines.points.push_back(
+			pointInWorldFrame(prev->feature_locations_3d_[earlier_id], earlier_v->transformation));
+	    }
+	}
 
-        for (unsigned int i=0;i<last_inlier_matches_.size(); i++){
-            int newer_id = last_inlier_matches_.at(i).queryIdx; //feature id in newer node
-            int earlier_id = last_inlier_matches_.at(i).trainIdx; //feature id in earlier node
+	for (unsigned int i=0;i<last_inlier_matches_.size(); i++){
+	    int newer_id = last_inlier_matches_.at(i).queryIdx; //feature id in newer node
+	    int earlier_id = last_inlier_matches_.at(i).trainIdx; //feature id in earlier node
 
-            //earlier_v = static_cast<AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[last_matching_node_]->id_]);
-            earlier_v = optimizer_->vertex(last_matching_node_);
-            //newer_v = static_cast<AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[graph_.size()-1]->id_]);
-            newer_v = optimizer_->vertex(graph_.size()-1);
+	    //earlier_v = static_cast<AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[last_matching_node_]->id_]);
+	    earlier_v = optimizer_->vertex(last_matching_node_);
+	    //newer_v = static_cast<AISNavigation::PoseGraph3D::Vertex*>(v_idmap[graph_[graph_.size()-1]->id_]);
+	    newer_v = optimizer_->vertex(graph_.size()-1);
 
 
-            //inliers are green (newer) to blue (older)
-            marker_lines.colors.push_back(color_green);
-            marker_lines.colors.push_back(color_blue);
+	    //inliers are green (newer) to blue (older)
+	    marker_lines.colors.push_back(color_green);
+	    marker_lines.colors.push_back(color_blue);
 
-            Node* last = graph_.find(graph_.size()-1)->second;
-            marker_lines.points.push_back(
-                    pointInWorldFrame(last->feature_locations_3d_[newer_id], newer_v->transformation));
-            Node* prev = graph_.find(last_matching_node_)->second;
-            marker_lines.points.push_back(
-                    pointInWorldFrame(prev->feature_locations_3d_[earlier_id], earlier_v->transformation));
-        }
+	    Node* last = graph_.find(graph_.size()-1)->second;
+	    marker_lines.points.push_back(
+		    pointInWorldFrame(last->feature_locations_3d_[newer_id], newer_v->transformation));
+	    Node* prev = graph_.find(last_matching_node_)->second;
+	    marker_lines.points.push_back(
+		    pointInWorldFrame(prev->feature_locations_3d_[earlier_id], earlier_v->transformation));
+	}
 
-        ransac_marker_pub_.publish(marker_lines);
-        ROS_DEBUG_STREAM("Published  " << marker_lines.points.size()/2 << " lines");
+	ransac_marker_pub_.publish(marker_lines);
+	ROS_DEBUG_STREAM("Published  " << marker_lines.points.size()/2 << " lines");
     }
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec");
 }
 
+// filename is ignored
+void GraphManager::writeMatchesToFile(QString filename)
+{
+  
+  cout << "writing all matches points to file" << endl;
+  
+  char name[200];
+  sprintf(name,"points.txt");
+  
+  ofstream of(name);
+  assert(of.is_open());
+  
+  for (uint i=0; i<graph_.size(); i++)
+  {
+    // get vertex for position and node for indices and positions
+    const AISNavigation::PoseGraph3D::Vertex* vertex = optimizer_->vertex(graph_.size()-1);
+    Node* node = graph_.find(i)->second;
+    
+    cout << "found " << node->matched_features.size() << " matches in node " << i << endl;
+    
+    // keep dublicates
+    for (uint j=0; j < node->matched_features.size(); j++)
+    {
+	geometry_msgs::Point p = pointInWorldFrame(node->feature_locations_3d_[node->matched_features.at(j)], vertex->transformation);
+	of << i << "    " <<  p.x << " " << p.y << " " << p.z << " " << endl;
+    }
+    
+    
+  }
+}
+
 //do spurious type conversions
 geometry_msgs::Point pointInWorldFrame(const Eigen::Vector4f& point3d,
-        Transformation3 transf){
+	Transformation3 transf){
     Vector3f tmp(point3d[0], point3d[1], point3d[2]);
     tmp = transf * tmp; //transform to world frame
     geometry_msgs::Point p;
@@ -493,9 +559,9 @@ QList<QPair<int, int> >* GraphManager::getGraphEdges() const {
     AISNavigation::PoseGraph3D::Vertex *v1, *v2; //used in loop
     AISNavigation::PoseGraph3D::EdgeSet::iterator edge_iter = optimizer_->edges().begin();
     for(;edge_iter != optimizer_->edges().end(); edge_iter++) {
-        v1 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
-        v2 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
-        edge_list->append( qMakePair(v1->id(), v2->id()));
+	v1 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
+	v2 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
+	edge_list->append( qMakePair(v1->id(), v2->id()));
     }
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", __FUNCTION__ << " runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
     return edge_list;
@@ -504,49 +570,49 @@ void GraphManager::visualizeGraphEdges() const {
     std::clock_t starttime=std::clock();
 
     if (marker_pub_.getNumSubscribers() > 0){ //no visualization for nobody
-        visualization_msgs::Marker edges_marker;
-        edges_marker.header.frame_id = "/openni_rgb_optical_frame"; //TODO: Should be a meaningfull fixed frame with known relative pose to the camera
-        edges_marker.header.stamp = ros::Time::now();
-        edges_marker.ns = "camera_pose_graph"; // Set the namespace and id for this marker.  This serves to create a unique ID
-        edges_marker.id = 0;    // Any marker sent with the same namespace and id will overwrite the old one
+	visualization_msgs::Marker edges_marker;
+	edges_marker.header.frame_id = "/openni_rgb_optical_frame"; //TODO: Should be a meaningfull fixed frame with known relative pose to the camera
+	edges_marker.header.stamp = ros::Time::now();
+	edges_marker.ns = "camera_pose_graph"; // Set the namespace and id for this marker.  This serves to create a unique ID
+	edges_marker.id = 0;    // Any marker sent with the same namespace and id will overwrite the old one
 
-        edges_marker.type = visualization_msgs::Marker::LINE_LIST;
-        edges_marker.action = visualization_msgs::Marker::ADD; // Set the marker action.  Options are ADD and DELETE
-        edges_marker.frame_locked = true; //rviz automatically retransforms the markers into the frame every update cycle
-        // Set the scale of the marker -- 1x1x1 here means 1m on a side
-        edges_marker.scale.x = 0.005; //line width
-        //Global pose (used to transform all points)
-        edges_marker.pose.position.x = 0;
-        edges_marker.pose.position.y = 0;
-        edges_marker.pose.position.z = 0;
-        edges_marker.pose.orientation.x = 0.0;
-        edges_marker.pose.orientation.y = 0.0;
-        edges_marker.pose.orientation.z = 0.0;
-        edges_marker.pose.orientation.w = 1.0;
-        // Set the color -- be sure to set alpha to something non-zero!
-        edges_marker.color.r = 1.0f;
-        edges_marker.color.g = 1.0f;
-        edges_marker.color.b = 1.0f;
-        edges_marker.color.a = 0.5f;//looks smoother
-        geometry_msgs::Point point; //start and endpoint for each line segment
-        AISNavigation::PoseGraph3D::Vertex* v; //used in loop
-        AISNavigation::PoseGraph3D::EdgeSet::iterator edge_iter = optimizer_->edges().begin();
-        int counter = 0;
-        for(;edge_iter != optimizer_->edges().end(); edge_iter++, counter++) {
-            v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
-            point.x = v->transformation.translation().x();
-            point.y = v->transformation.translation().y();
-            point.z = v->transformation.translation().z();
-            edges_marker.points.push_back(point);
-            v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
-            point.x = v->transformation.translation().x();
-            point.y = v->transformation.translation().y();
-            point.z = v->transformation.translation().z();
-            edges_marker.points.push_back(point);
-        }
+	edges_marker.type = visualization_msgs::Marker::LINE_LIST;
+	edges_marker.action = visualization_msgs::Marker::ADD; // Set the marker action.  Options are ADD and DELETE
+	edges_marker.frame_locked = true; //rviz automatically retransforms the markers into the frame every update cycle
+	// Set the scale of the marker -- 1x1x1 here means 1m on a side
+	edges_marker.scale.x = 0.005; //line width
+	//Global pose (used to transform all points)
+	edges_marker.pose.position.x = 0;
+	edges_marker.pose.position.y = 0;
+	edges_marker.pose.position.z = 0;
+	edges_marker.pose.orientation.x = 0.0;
+	edges_marker.pose.orientation.y = 0.0;
+	edges_marker.pose.orientation.z = 0.0;
+	edges_marker.pose.orientation.w = 1.0;
+	// Set the color -- be sure to set alpha to something non-zero!
+	edges_marker.color.r = 1.0f;
+	edges_marker.color.g = 1.0f;
+	edges_marker.color.b = 1.0f;
+	edges_marker.color.a = 0.5f;//looks smoother
+	geometry_msgs::Point point; //start and endpoint for each line segment
+	AISNavigation::PoseGraph3D::Vertex* v; //used in loop
+	AISNavigation::PoseGraph3D::EdgeSet::iterator edge_iter = optimizer_->edges().begin();
+	int counter = 0;
+	for(;edge_iter != optimizer_->edges().end(); edge_iter++, counter++) {
+	    v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
+	    point.x = v->transformation.translation().x();
+	    point.y = v->transformation.translation().y();
+	    point.z = v->transformation.translation().z();
+	    edges_marker.points.push_back(point);
+	    v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
+	    point.x = v->transformation.translation().x();
+	    point.y = v->transformation.translation().y();
+	    point.z = v->transformation.translation().z();
+	    edges_marker.points.push_back(point);
+	}
 
-        marker_pub_.publish (edges_marker);
-        ROS_INFO("published %d graph edges", counter);
+	marker_pub_.publish (edges_marker);
+	ROS_INFO("published %d graph edges", counter);
     }
 
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
@@ -556,94 +622,94 @@ void GraphManager::visualizeGraphNodes() const {
     std::clock_t starttime=std::clock();
 
     if (marker_pub_.getNumSubscribers() > 0){ //don't visualize, if nobody's looking
-        visualization_msgs::Marker nodes_marker;
-        nodes_marker.header.frame_id = "/openni_rgb_optical_frame"; //TODO: Should be a meaningfull fixed frame with known relative pose to the camera
-        nodes_marker.header.stamp = ros::Time::now();
-        nodes_marker.ns = "camera_pose_graph"; // Set the namespace and id for this marker.  This serves to create a unique ID
-        nodes_marker.id = 1;    // Any marker sent with the same namespace and id will overwrite the old one
+	visualization_msgs::Marker nodes_marker;
+	nodes_marker.header.frame_id = "/openni_rgb_optical_frame"; //TODO: Should be a meaningfull fixed frame with known relative pose to the camera
+	nodes_marker.header.stamp = ros::Time::now();
+	nodes_marker.ns = "camera_pose_graph"; // Set the namespace and id for this marker.  This serves to create a unique ID
+	nodes_marker.id = 1;    // Any marker sent with the same namespace and id will overwrite the old one
 
 
-        nodes_marker.type = visualization_msgs::Marker::LINE_LIST;
-        nodes_marker.action = visualization_msgs::Marker::ADD; // Set the marker action.  Options are ADD and DELETE
-        nodes_marker.frame_locked = true; //rviz automatically retransforms the markers into the frame every update cycle
-        // Set the scale of the marker -- 1x1x1 here means 1m on a side
-        nodes_marker.scale.x = 0.002;
-        //Global pose (used to transform all points) //TODO: is this the default pose anyway?
-        nodes_marker.pose.position.x = 0;
-        nodes_marker.pose.position.y = 0;
-        nodes_marker.pose.position.z = 0;
-        nodes_marker.pose.orientation.x = 0.0;
-        nodes_marker.pose.orientation.y = 0.0;
-        nodes_marker.pose.orientation.z = 0.0;
-        nodes_marker.pose.orientation.w = 1.0;
-        // Set the color -- be sure to set alpha to something non-zero!
-        nodes_marker.color.r = 1.0f;
-        nodes_marker.color.g = 0.0f;
-        nodes_marker.color.b = 0.0f;
-        nodes_marker.color.a = 1.0f;
+	nodes_marker.type = visualization_msgs::Marker::LINE_LIST;
+	nodes_marker.action = visualization_msgs::Marker::ADD; // Set the marker action.  Options are ADD and DELETE
+	nodes_marker.frame_locked = true; //rviz automatically retransforms the markers into the frame every update cycle
+	// Set the scale of the marker -- 1x1x1 here means 1m on a side
+	nodes_marker.scale.x = 0.002;
+	//Global pose (used to transform all points) //TODO: is this the default pose anyway?
+	nodes_marker.pose.position.x = 0;
+	nodes_marker.pose.position.y = 0;
+	nodes_marker.pose.position.z = 0;
+	nodes_marker.pose.orientation.x = 0.0;
+	nodes_marker.pose.orientation.y = 0.0;
+	nodes_marker.pose.orientation.z = 0.0;
+	nodes_marker.pose.orientation.w = 1.0;
+	// Set the color -- be sure to set alpha to something non-zero!
+	nodes_marker.color.r = 1.0f;
+	nodes_marker.color.g = 0.0f;
+	nodes_marker.color.b = 0.0f;
+	nodes_marker.color.a = 1.0f;
 
 
-        geometry_msgs::Point tail; //same startpoint for each line segment
-        geometry_msgs::Point tip;  //different endpoint for each line segment
-        std_msgs::ColorRGBA arrow_color_red  ;  //red x axis
-        arrow_color_red.r = 1.0;
-        arrow_color_red.a = 1.0;
-        std_msgs::ColorRGBA arrow_color_green;  //green y axis
-        arrow_color_green.g = 1.0;
-        arrow_color_green.a = 1.0;
-        std_msgs::ColorRGBA arrow_color_blue ;  //blue z axis
-        arrow_color_blue.b = 1.0;
-        arrow_color_blue.a = 1.0;
-        Vector3f origin(0.0,0.0,0.0);
-        Vector3f x_axis(0.2,0.0,0.0); //20cm long axis for the first (almost fixed) node
-        Vector3f y_axis(0.0,0.2,0.0);
-        Vector3f z_axis(0.0,0.0,0.2);
-        Vector3f tmp; //the transformed endpoints
-        int counter = 0;
-        AISNavigation::PoseGraph3D::Vertex* v; //used in loop
-        AISNavigation::PoseGraph3D::VertexIDMap::iterator vertex_iter = optimizer_->vertices().begin();
-        for(/*see above*/; vertex_iter != optimizer_->vertices().end(); vertex_iter++, counter++) {
-            v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*vertex_iter).second);
-            //v->transformation.rotation().x()+ v->transformation.rotation().y()+ v->transformation.rotation().z()+ v->transformation.rotation().w();
-            tmp = v->transformation * origin;
-            tail.x = tmp.x();
-            tail.y = tmp.y();
-            tail.z = tmp.z();
-            //Endpoints X-Axis
-            nodes_marker.points.push_back(tail);
-            nodes_marker.colors.push_back(arrow_color_red);
-            tmp = v->transformation * x_axis;
-            tip.x  = tmp.x();
-            tip.y  = tmp.y();
-            tip.z  = tmp.z();
-            nodes_marker.points.push_back(tip);
-            nodes_marker.colors.push_back(arrow_color_red);
-            //Endpoints Y-Axis
-            nodes_marker.points.push_back(tail);
-            nodes_marker.colors.push_back(arrow_color_green);
-            tmp = v->transformation * y_axis;
-            tip.x  = tmp.x();
-            tip.y  = tmp.y();
-            tip.z  = tmp.z();
-            nodes_marker.points.push_back(tip);
-            nodes_marker.colors.push_back(arrow_color_green);
-            //Endpoints Z-Axis
-            nodes_marker.points.push_back(tail);
-            nodes_marker.colors.push_back(arrow_color_blue);
-            tmp = v->transformation * z_axis;
-            tip.x  = tmp.x();
-            tip.y  = tmp.y();
-            tip.z  = tmp.z();
-            nodes_marker.points.push_back(tip);
-            nodes_marker.colors.push_back(arrow_color_blue);
-            //shorten all nodes after the first one
-            x_axis.x() = 0.1;
-            y_axis.y() = 0.1;
-            z_axis.z() = 0.1;
-        }
+	geometry_msgs::Point tail; //same startpoint for each line segment
+	geometry_msgs::Point tip;  //different endpoint for each line segment
+	std_msgs::ColorRGBA arrow_color_red  ;  //red x axis
+	arrow_color_red.r = 1.0;
+	arrow_color_red.a = 1.0;
+	std_msgs::ColorRGBA arrow_color_green;  //green y axis
+	arrow_color_green.g = 1.0;
+	arrow_color_green.a = 1.0;
+	std_msgs::ColorRGBA arrow_color_blue ;  //blue z axis
+	arrow_color_blue.b = 1.0;
+	arrow_color_blue.a = 1.0;
+	Vector3f origin(0.0,0.0,0.0);
+	Vector3f x_axis(0.2,0.0,0.0); //20cm long axis for the first (almost fixed) node
+	Vector3f y_axis(0.0,0.2,0.0);
+	Vector3f z_axis(0.0,0.0,0.2);
+	Vector3f tmp; //the transformed endpoints
+	int counter = 0;
+	AISNavigation::PoseGraph3D::Vertex* v; //used in loop
+	AISNavigation::PoseGraph3D::VertexIDMap::iterator vertex_iter = optimizer_->vertices().begin();
+	for(/*see above*/; vertex_iter != optimizer_->vertices().end(); vertex_iter++, counter++) {
+	    v = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*vertex_iter).second);
+	    //v->transformation.rotation().x()+ v->transformation.rotation().y()+ v->transformation.rotation().z()+ v->transformation.rotation().w();
+	    tmp = v->transformation * origin;
+	    tail.x = tmp.x();
+	    tail.y = tmp.y();
+	    tail.z = tmp.z();
+	    //Endpoints X-Axis
+	    nodes_marker.points.push_back(tail);
+	    nodes_marker.colors.push_back(arrow_color_red);
+	    tmp = v->transformation * x_axis;
+	    tip.x  = tmp.x();
+	    tip.y  = tmp.y();
+	    tip.z  = tmp.z();
+	    nodes_marker.points.push_back(tip);
+	    nodes_marker.colors.push_back(arrow_color_red);
+	    //Endpoints Y-Axis
+	    nodes_marker.points.push_back(tail);
+	    nodes_marker.colors.push_back(arrow_color_green);
+	    tmp = v->transformation * y_axis;
+	    tip.x  = tmp.x();
+	    tip.y  = tmp.y();
+	    tip.z  = tmp.z();
+	    nodes_marker.points.push_back(tip);
+	    nodes_marker.colors.push_back(arrow_color_green);
+	    //Endpoints Z-Axis
+	    nodes_marker.points.push_back(tail);
+	    nodes_marker.colors.push_back(arrow_color_blue);
+	    tmp = v->transformation * z_axis;
+	    tip.x  = tmp.x();
+	    tip.y  = tmp.y();
+	    tip.z  = tmp.z();
+	    nodes_marker.points.push_back(tip);
+	    nodes_marker.colors.push_back(arrow_color_blue);
+	    //shorten all nodes after the first one
+	    x_axis.x() = 0.1;
+	    y_axis.y() = 0.1;
+	    z_axis.z() = 0.1;
+	}
 
-        marker_pub_.publish (nodes_marker);
-        ROS_INFO("published %d graph nodes", counter);
+	marker_pub_.publish (nodes_marker);
+	ROS_INFO("published %d graph nodes", counter);
     }
 
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
@@ -660,19 +726,19 @@ bool GraphManager::addEdgeToHogman(AIS::LoadedEdge3D edge, bool largeEdge) {
     // at least one vertex has to be created, assert that the transformation
     // is large enough to avoid to many vertices on the same spot
     if (!v1 || !v2){
-        if (!largeEdge) {
-            ROS_INFO("Edge to new vertex is to short, vertex will not be inserted");
-            return false; 
-        }
+	if (!largeEdge) {
+	    ROS_INFO("Edge to new vertex is to short, vertex will not be inserted");
+	    return false; 
+	}
     }
 
     if (!v1) {
-        v1 = optimizer_->addVertex(edge.id1, Transformation3(), Matrix6::eye(1.0));
-        assert(v1);
+	v1 = optimizer_->addVertex(edge.id1, Transformation3(), Matrix6::eye(1.0));
+	assert(v1);
     }
     if (!v2) {
-        v2 = optimizer_->addVertex(edge.id2, Transformation3(), Matrix6::eye(1.0));
-        assert(v2);
+	v2 = optimizer_->addVertex(edge.id2, Transformation3(), Matrix6::eye(1.0));
+	assert(v2);
     }
     optimizer_->addEdge(v1, v2, edge.mean, edge.informationMatrix);
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
@@ -687,9 +753,9 @@ void GraphManager::optimizeGraph(){
     int currentIt = optimizer_->optimize(iterations, true);
 
     ROS_INFO_STREAM("Hogman Statistics: " << optimizer_->vertices().size() << " nodes, " 
-                    << optimizer_->edges().size() << " edges. "
-                    << "chi2: " << optimizer_->chi2()
-                    << ", Iterations: " << currentIt);
+		    << optimizer_->edges().size() << " edges. "
+		    << "chi2: " << optimizer_->chi2()
+		    << ", Iterations: " << currentIt);
 
     freshlyOptimized_ = true;
 
@@ -700,8 +766,8 @@ void GraphManager::optimizeGraph(){
 
     /*publish the corrected transforms to the visualization module every five seconds
     if( ((std::clock()-last_batch_update_) / (double)CLOCKS_PER_SEC) > 2){
-        publishCorrectedTransforms();
-        last_batch_update_ = std::clock();
+	publishCorrectedTransforms();
+	last_batch_update_ = std::clock();
     }*/
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
 }
@@ -717,11 +783,11 @@ void GraphManager::broadcastTransform(const ros::TimerEvent& ){
     //printTransform("kinect", kinect_transform_);
     time_of_last_transform_ = ros::Time::now();
     br_.sendTransform(tf::StampedTransform(world2cam_, time_of_last_transform_,
-                      "/openni_camera", "/slam_transform"));
+		      "/openni_camera", "/slam_transform"));
 
     if(!batch_processing_runs_)
-        br_.sendTransform(tf::StampedTransform(cam2rgb, time_of_last_transform_,
-                          "/openni_camera", "/batch_transform"));
+	br_.sendTransform(tf::StampedTransform(cam2rgb, time_of_last_transform_,
+			  "/openni_camera", "/batch_transform"));
 
     //visualize the transformation
     std::stringstream ss;
@@ -735,24 +801,24 @@ void GraphManager::broadcastTransform(const ros::TimerEvent& ){
 }
 
 /**
- * Publish the updated transforms for the graph node resp. clouds
- *
+* Publish the updated transforms for the graph node resp. clouds
+*
 void GraphManager::publishCorrectedTransforms(){
     std::clock_t starttime=std::clock();
     //fill message
     rgbdslam::CloudTransforms msg;
     for (unsigned int i = 0; i < optimizer_->vertices().size(); ++i) {
-        AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
-        tf::Transform trans = hogman2TF(v->transformation);
-        geometry_msgs::Transform trans_msg;
-        tf::transformTFToMsg(trans,trans_msg);
-        msg.transforms.push_back(trans_msg);
-        msg.ids.push_back(graph_[i]->msg_id_); //msg_id is no more
+	AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
+	tf::Transform trans = hogman2TF(v->transformation);
+	geometry_msgs::Transform trans_msg;
+	tf::transformTFToMsg(trans,trans_msg);
+	msg.transforms.push_back(trans_msg);
+	msg.ids.push_back(graph_[i]->msg_id_); //msg_id is no more
     }
     msg.header.stamp = ros::Time::now();
 
     if (transform_pub_.getNumSubscribers() > 0)
-        transform_pub_.publish(msg);
+	transform_pub_.publish(msg);
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
 }*/
 
@@ -771,10 +837,10 @@ void GraphManager::deleteLastFrame(){
     AISNavigation::PoseGraph3D::Vertex *v1, *v2; //used in loop as temporaries
     AISNavigation::PoseGraph3D::EdgeSet::iterator edge_iter = optimizer_->edges().begin();
     for(;edge_iter != optimizer_->edges().end(); edge_iter++) {
-        v1 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
-        v2 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
-        if(v1->id() == v_to_del->id() || v2->id() == v_to_del->id()) 
-          optimizer_->removeEdge((*edge_iter));
+	v1 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->from());
+	v2 = static_cast<AISNavigation::PoseGraph3D::Vertex*>((*edge_iter)->to());
+	if(v1->id() == v_to_del->id() || v2->id() == v_to_del->id()) 
+	  optimizer_->removeEdge((*edge_iter));
     }
 
     optimizer_->removeVertex(v_to_del);
@@ -797,12 +863,12 @@ QList<QMatrix4x4>* GraphManager::getAllPosesAsMatrixList(){
 #endif
 
     for (unsigned int i = 0; i < optimizer_->vertices().size(); ++i) {
-        AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
-        if(v){ 
-            result->push_back(hogman2QMatrix(v->transformation)); 
-        } else {
-            ROS_ERROR("Nullpointer in graph at position %i!", i);
-        }
+	AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
+	if(v){ 
+	    result->push_back(hogman2QMatrix(v->transformation)); 
+	} else {
+	    ROS_ERROR("Nullpointer in graph at position %i!", i);
+	}
     }
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
     return result;
@@ -824,6 +890,11 @@ void GraphManager::saveAllClouds(QString filename){
 #endif
 
 void GraphManager::saveAllCloudsToFile(QString filename){
+  
+  // HACK
+  writeMatchesToFile("");
+  
+  
     std::clock_t starttime=std::clock();
     pointcloud_type aggregate_cloud; ///will hold all other clouds
     ROS_INFO("Saving all clouds to %s, this may take a while as they need to be transformed to a common coordinate frame.", qPrintable(filename));
@@ -833,18 +904,18 @@ void GraphManager::saveAllCloudsToFile(QString filename){
     //rgbdslam::CloudTransforms msg;
     QString message;
     for (unsigned int i = 0; i < optimizer_->vertices().size(); ++i) {
-        AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
-        if(!v){ 
-            ROS_ERROR("Nullpointer in graph at position %i!", i);
-            continue;
-        }
-        tf::Transform transform = hogman2TF(v->transformation);
-        tf::Transform cam2rgb;
-        cam2rgb.setRotation(tf::createQuaternionFromRPY(-1.57,0,-1.57));
-        cam2rgb.setOrigin(tf::Point(0,-0.04,0));
-        world2cam = cam2rgb*transform;
-        transformAndAppendPointCloud (graph_[i]->pc_col, aggregate_cloud, world2cam, Max_Depth);
-        Q_EMIT setGUIStatus(message.sprintf("Saving to %s: Transformed Node %i/%i", qPrintable(filename), i, (int)optimizer_->vertices().size()));
+	AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
+	if(!v){ 
+	    ROS_ERROR("Nullpointer in graph at position %i!", i);
+	    continue;
+	}
+	tf::Transform transform = hogman2TF(v->transformation);
+	tf::Transform cam2rgb;
+	cam2rgb.setRotation(tf::createQuaternionFromRPY(-1.57,0,-1.57));
+	cam2rgb.setOrigin(tf::Point(0,-0.04,0));
+	world2cam = cam2rgb*transform;
+	transformAndAppendPointCloud (graph_[i]->pc_col, aggregate_cloud, world2cam, Max_Depth);
+	Q_EMIT setGUIStatus(message.sprintf("Saving to %s: Transformed Node %i/%i", qPrintable(filename), i, (int)optimizer_->vertices().size()));
     }
     aggregate_cloud.header.frame_id = "/openni_camera";
     if(filename.endsWith(".pcd", Qt::CaseInsensitive))
@@ -855,12 +926,12 @@ void GraphManager::saveAllCloudsToFile(QString filename){
     ROS_INFO ("Saved %d data points to %s", (int)aggregate_cloud.points.size(), qPrintable(filename));
 
     if (aggregate_cloud_pub_.getNumSubscribers() > 0){ //if it should also be send out
-        sensor_msgs::PointCloud2 cloudMessage_; //this will be send out in batch mode
-        pcl::toROSMsg(aggregate_cloud,cloudMessage_);
-        cloudMessage_.header.frame_id = "/openni_camera";
-        cloudMessage_.header.stamp = ros::Time::now();
-        aggregate_cloud_pub_.publish(cloudMessage_);
-        ROS_INFO("Aggregate pointcloud sent");
+	sensor_msgs::PointCloud2 cloudMessage_; //this will be send out in batch mode
+	pcl::toROSMsg(aggregate_cloud,cloudMessage_);
+	cloudMessage_.header.frame_id = "/openni_camera";
+	cloudMessage_.header.stamp = ros::Time::now();
+	aggregate_cloud_pub_.publish(cloudMessage_);
+	ROS_INFO("Aggregate pointcloud sent");
     }
     batch_processing_runs_ = false;
     ROS_INFO_STREAM_COND_NAMED(( (std::clock()-starttime) / (double)CLOCKS_PER_SEC) > global_min_time_reported, "timings", "function runtime: "<< ( std::clock() - starttime ) / (double)CLOCKS_PER_SEC  <<"sec"); 
@@ -903,24 +974,24 @@ void GraphManager::sendAllClouds(){
     //fill message
     //rgbdslam::CloudTransforms msg;
     for (unsigned int i = 0; i < optimizer_->vertices().size(); ++i) {
-        AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
-        if(!v){ 
-            ROS_ERROR("Nullpointer in graph at position %i!", i);
-            continue;
-        }
-        tf::Transform transform = hogman2TF(v->transformation);
+	AIS::PoseGraph3D::Vertex* v = optimizer_->vertex(i);
+	if(!v){ 
+	    ROS_ERROR("Nullpointer in graph at position %i!", i);
+	    continue;
+	}
+	tf::Transform transform = hogman2TF(v->transformation);
 
-        tf::Transform cam2rgb;
-        cam2rgb.setRotation(tf::createQuaternionFromRPY(-1.57,0,-1.57));
-        cam2rgb.setOrigin(tf::Point(0,-0.04,0));
+	tf::Transform cam2rgb;
+	cam2rgb.setRotation(tf::createQuaternionFromRPY(-1.57,0,-1.57));
+	cam2rgb.setOrigin(tf::Point(0,-0.04,0));
 
-        world2cam = cam2rgb*transform;
-        ros::Time time_of_transform = ros::Time::now();
-        ROS_DEBUG("Sending out transform %i", i);
-        br_.sendTransform(tf::StampedTransform(world2cam, time_of_transform,
-                          "/openni_camera", "/batch_transform"));
-        ROS_DEBUG("Sending out cloud %i", i);
-        graph_[i]->publish("/batch_transform", time_of_transform);
+	world2cam = cam2rgb*transform;
+	ros::Time time_of_transform = ros::Time::now();
+	ROS_DEBUG("Sending out transform %i", i);
+	br_.sendTransform(tf::StampedTransform(world2cam, time_of_transform,
+			  "/openni_camera", "/batch_transform"));
+	ROS_DEBUG("Sending out cloud %i", i);
+	graph_[i]->publish("/batch_transform", time_of_transform);
     }
 
     batch_processing_runs_ = false;
@@ -947,18 +1018,18 @@ void GraphManager::setMaxDepth(float max_depth){
 //transformAndAppendPointCloud (const pcl::PointCloud<PointT> &cloud_in, pcl::PointCloud<PointT> &cloud_to_append_to,
 //                              const tf::Transform transformation)
 void transformAndAppendPointCloud (const pointcloud_type &cloud_in, 
-                                   pointcloud_type &cloud_to_append_to,
-                                   const tf::Transform transformation, float Max_Depth)
+				  pointcloud_type &cloud_to_append_to,
+				  const tf::Transform transformation, float Max_Depth)
 {
     bool compact = !global_preserve_raster_on_save;
     Eigen::Matrix4f eigen_transform;
     pcl_ros::transformAsMatrix(transformation, eigen_transform);
     unsigned int cloud_to_append_to_original_size = cloud_to_append_to.size();
     if(cloud_to_append_to.points.size() ==0){
-        cloud_to_append_to.header   = cloud_in.header;
-        cloud_to_append_to.width    = 0;
-        cloud_to_append_to.height   = 0;
-        cloud_to_append_to.is_dense = false;
+	cloud_to_append_to.header   = cloud_in.header;
+	cloud_to_append_to.width    = 0;
+	cloud_to_append_to.height   = 0;
+	cloud_to_append_to.is_dense = false;
     }
 
     ROS_INFO("Max_Depth = %f", Max_Depth);
@@ -976,12 +1047,12 @@ void transformAndAppendPointCloud (const pointcloud_type &cloud_in,
     int j = 0;
     for (size_t i = 0; i < cloud_in.points.size (); ++i)
     { 
-     Eigen::Map<Eigen::Vector3f> p_in (&cloud_in.points[i].x, 3, 1);
-     Eigen::Map<Eigen::Vector3f> p_out (&cloud_to_append_to.points[j+cloud_to_append_to_original_size].x, 3, 1);
-     if(compact){ cloud_to_append_to.points[j+cloud_to_append_to_original_size] = cloud_in.points[i]; }
-     //filter out points with a range greater than the given Parameter or do nothing if negativ
-     if(Max_Depth >= 0){
-		 if(pcl::squaredEuclideanDistance(cloud_in.points[i], origin) > Max_Depth*Max_Depth){
+    Eigen::Map<Eigen::Vector3f> p_in (&cloud_in.points[i].x, 3, 1);
+    Eigen::Map<Eigen::Vector3f> p_out (&cloud_to_append_to.points[j+cloud_to_append_to_original_size].x, 3, 1);
+    if(compact){ cloud_to_append_to.points[j+cloud_to_append_to_original_size] = cloud_in.points[i]; }
+    //filter out points with a range greater than the given Parameter or do nothing if negativ
+    if(Max_Depth >= 0){
+		if(pcl::squaredEuclideanDistance(cloud_in.points[i], origin) > Max_Depth*Max_Depth){
 			p_out[0]= numeric_limits<float>::quiet_NaN();
 			p_out[1]= numeric_limits<float>::quiet_NaN();
 			p_out[2]= numeric_limits<float>::quiet_NaN();
@@ -990,8 +1061,8 @@ void transformAndAppendPointCloud (const pointcloud_type &cloud_in,
 		  }
       }
       if (pcl_isnan (cloud_in.points[i].x) || pcl_isnan (cloud_in.points[i].y) || pcl_isnan (cloud_in.points[i].z)){
-        if(!compact) j++;
-    	  continue;
+	if(!compact) j++;
+	  continue;
       }
       p_out = rot * p_in + trans;
       j++;

@@ -80,8 +80,6 @@ class GraphManager : public QObject {
     ///Throw the last node out, reoptimize
     void deleteLastFrame(); 
     void setMaxDepth(float max_depth);
-    
-    void writeMatchesToFile(QString filename);
 
     public:
     GraphManager(ros::NodeHandle, GLViewer* glviewer);

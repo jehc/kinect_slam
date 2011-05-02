@@ -97,7 +97,7 @@ matcher_(matcher)
   //} */
 
   // get pcl::Pointcloud to extract depthValues a pixel positions
-  std::clock_t starttime5=std::clock();
+  // std::clock_t starttime5=std::clock();
   // TODO: If batch sending/saving of clouds would be removed, the pointcloud wouldn't have to be saved
   // which would slim down the Memory requirements
   pcl::fromROSMsg(*point_cloud,pc_col);
@@ -286,7 +286,7 @@ void Node::createGICPStructures(unsigned int max_count){
 
 //TODO: This function seems to be resistant to paralellization probably due to knnSearch
 int Node::findPairsFlann(const Node* other, vector<cv::DMatch>* matches) const {
-  std::clock_t starttime=std::clock();
+  // std::clock_t starttime=std::clock();
   assert(matches->size()==0);
 
   if (other->flannIndex == NULL) {
@@ -794,7 +794,7 @@ void Node::gicpSetIdentity(dgc_transform_t m){
 
 
 //TODO: Merge this with processNodePair
-MatchingResult Node::matchNodePair(const Node* older_node){
+MatchingResult Node::matchNodePair(const Node* older_node){ 
   MatchingResult mr;
   const unsigned int min_matches = 16; // minimal number of feature correspondences to be a valid candidate for a link
   // std::clock_t starttime=std::clock();
@@ -889,17 +889,6 @@ MatchingResult Node::matchNodePair(const Node* older_node){
 #endif
 #endif
 
-
-
-
-// TODO: print all matching points in world-frame
-
-    this-> 
-
-
-
-
-// <TODO>
 
       mr.edge.id1 = older_node->id_;//and we have a valid transformation
       mr.edge.id2 = this->id_; //since there are enough matching features,
