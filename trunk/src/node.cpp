@@ -602,8 +602,8 @@ bool Node::getRelativeTransformationTo(const Node* earlier_node,
   matches.clear();
   
   // get 30% of initial matches as inliers (but cut off at 30)
-  float pct = 0.2;
-  uint min_fix = 30;
+  float pct = 0.25;
+  uint min_fix = 40;
   
   uint min_inlier_threshold = int(initial_matches->size()*pct);
   min_inlier_threshold = min(min_inlier_threshold,min_fix);

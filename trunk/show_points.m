@@ -9,18 +9,19 @@ for i=0:node_cnt
 	
 	size(ndx)
 	
-	x = A(ndx,2);
-	y = A(ndx,3);
-	z = A(ndx,4);
-	if (i==0)
+	x = A(unique(ndx),2);
+	y = A(unique(ndx),3);
+	z = A(unique(ndx),4);
+	
+	if (mod(i,3)==0)
 		plot3(x,y,z,'ro');
 	end
 	
-	if (i==1)
+	if (mod(i,3)==1)
 		plot3(x,y,z,'go');
 	end
 	
-	if (i==2)
+	if (mod(i,3)==2)
 		plot3(x,y,z,'bo');
 	end
 	
