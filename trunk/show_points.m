@@ -7,7 +7,6 @@ hold on
 for i=0:node_cnt
 	ndx = find(A(:,1)==i);
 	
-	i
 	size(ndx)
 	
 	x = A(ndx,2);

@@ -524,11 +524,16 @@ void GraphManager::writeMatchesToFile(QString filename)
   for (uint i=0; i<graph_.size(); i++)
   {
     // get vertex for position and node for indices and positions
-    const AISNavigation::PoseGraph3D::Vertex* vertex = optimizer_->vertex(graph_.size()-1);
+    const AISNavigation::PoseGraph3D::Vertex* vertex = optimizer_->vertex(i);
     Node* node = graph_.find(i)->second;
     
     cout << "found " << node->matched_features.size() << " matches in node " << i << endl;
-    
+    cout << "trafo: " << endl;
+    float angle_around_axis = 2.0*acos(vertex->transformation._rotation.w()) *180.0 / M_PI;
+    float dist = vertex->transformation._translation.norm();
+
+    QString infostring;
+    printf("Rotation:% 4.2f, Distance: % 4.3fm \n", angle_around_axis, dist);
     // keep dublicates
     for (uint j=0; j < node->matched_features.size(); j++)
     {
